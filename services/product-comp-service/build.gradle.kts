@@ -15,7 +15,13 @@ repositories {
     mavenCentral()
 }
 
+tasks.named<Jar>("jar") {
+    enabled = false	// we don't need to create a plain jar file
+}
+
 dependencies {
+    implementation(project(":api"))
+    implementation(project(":util"))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
