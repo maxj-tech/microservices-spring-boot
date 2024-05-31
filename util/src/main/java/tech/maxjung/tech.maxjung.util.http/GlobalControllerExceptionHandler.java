@@ -14,25 +14,29 @@ import tech.maxjung.api.exceptions.NotFoundException;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
+/* instead of having repetitive try-catch blocks in each REST controller,
+  @RestControllerAdvice lets you define error handling logic in one place for all your controllers.
+ */
 @RestControllerAdvice
 class GlobalControllerExceptionHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
-  @ResponseStatus(NOT_FOUND)
-  @ExceptionHandler(NotFoundException.class)
-  public @ResponseBody HttpErrorInfo handleNotFoundExceptions(
-    ServerHttpRequest request, NotFoundException ex) {
-
-    return createHttpErrorInfo(NOT_FOUND, request, ex);
-  }
-
+  // this maps a InvalidInputException to a HTTP 422 Unprocessable Entity status code
   @ResponseStatus(UNPROCESSABLE_ENTITY)
   @ExceptionHandler(InvalidInputException.class)
   public @ResponseBody HttpErrorInfo handleInvalidInputException(
     ServerHttpRequest request, InvalidInputException ex) {
 
     return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+  }
+
+  @ResponseStatus(NOT_FOUND)
+  @ExceptionHandler(NotFoundException.class)
+  public @ResponseBody HttpErrorInfo handleNotFoundExceptions(
+          ServerHttpRequest request, NotFoundException ex) {
+
+    return createHttpErrorInfo(NOT_FOUND, request, ex);
   }
 
   private HttpErrorInfo createHttpErrorInfo(

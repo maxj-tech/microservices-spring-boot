@@ -76,6 +76,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
         } catch (HttpClientErrorException ex) {
 
+            // the reverse of GlobalControllerExceptionHandler's code
             switch (HttpStatus.resolve(ex.getStatusCode().value())) {
                 case NOT_FOUND:
                     throw new NotFoundException(getErrorMessage(ex));
