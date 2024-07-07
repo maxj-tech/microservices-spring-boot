@@ -1,0 +1,23 @@
+x-service-defaults: &service-defaults
+  mem_limit: 300m
+  environment:
+    - SPRING_PROFILES_ACTIVE=docker
+
+services:
+  product:
+    <<: *service-defaults
+    build: ./services/product-service
+
+  recommendation:
+    <<: *service-defaults
+    build: ./services/recommendation-service
+
+  review:
+    <<: *service-defaults
+    build: ./services/review-service
+
+  product-comp:
+    <<: *service-defaults
+    build: ./services/product-comp-service
+    ports:
+      - "8080:8080"
