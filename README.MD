@@ -3,6 +3,7 @@
 This document provides helpful hints, reminders, and bash snippets for managing microservices built with Spring Boot and Spring Cloud.
 
 ## General Commands
+
 ### Build and Clean
 - **Build all services**: `./gradlew build`
 - **Clean all services**: `./gradlew clean`
@@ -44,12 +45,26 @@ Optional arguments for performing a Gradle clean or build before starting the se
 ```bash
 ./scripts/start-services.sh build
 ```
+To start all services using Docker Compose:
+```bash
+./scripts/start-services.sh docker
+```
+
 
 ### Test Services
-To perform curl requests to the main endpoints of each service to check their normal operation:
-```bash
-./scripts/test-services.sh
-```
+To perform curl requests to the composite service that talks to all other services:
+- default port 8080 (docker):
+  ```bash
+  ./scripts/test-services.sh
+  ```
+- port 7000 (dev):
+  ```bash
+  PORT=7000 ./scripts/test-services.sh
+  ```
+- default port 8080 (docker) plus starting and stopping:
+  ```bash
+  ./scripts/test-services.sh start stop
+  ```
 
 ### Stop Services
 To stop all running services:
@@ -57,18 +72,16 @@ To stop all running services:
 ./scripts/stop-services.sh
 ```
 
-## Curl Commands for Testing Services
-### Happy Paths
-- **Product Composite Service**: `curl http://localhost:7000/product-composite/123 -s | jq .`
-- **Product Service**: `curl http://localhost:7001/product/123 -s | jq .`
-- **Recommendation Service**: `curl http://localhost:7002/recommendation?productId=123 -s | jq .`
-- **Review Service**: `curl http://localhost:7003/review?productId=123 -s | jq .`
-
-### Error Handling Tests
-- **Expect 404 from Product Composite Service**: `curl http://localhost:7000/product-composite/13 -i; echo`
-- **Expect 400 from Product Service**: `curl http://localhost:7001/product/invalidProductId -i; echo`
-- **No results from Recommendation Service**: `curl http://localhost:7002/recommendation?productId=113 -s | jq .`
-- **No results from Review Service**: `curl http://localhost:7003/review?productId=213 -s | jq .`
 
 ## Setup Development Environment
 - **Java Installation**: Use SDKMAN to install Java. Recommended version is Java 17 from JetBrains (`-jbr`).
+- **Docker**: TODO
+
+## Handy Docker Commands
+- 💡Pipe the output of `docker ps -aq` (which lists all container IDs) into the `docker rm` command, 
+  which **removes all containers** listed using the`-f` force flag:
+    ```bash
+    docker rm -f $(docker ps -aq)
+    ```
+
+  
