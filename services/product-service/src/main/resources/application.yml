@@ -5,4 +5,4 @@ server.port: 7001
 logging:
   level:
     root: INFO
-    tech.maxjung.services: DEBUG
+    tech.maxjung: DEBUG
