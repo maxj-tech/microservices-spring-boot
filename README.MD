@@ -72,6 +72,48 @@ To stop all running services:
 ./scripts/stop-services.sh
 ```
 
+## Using IntelliJ HTTP Client with Environment Files
+
+### Setting Up Environment Files
+
+Place the environment and HTTP request files in the `/http-requests/` directory. Example structure:
+
+```plaintext
+/http-requests/
+  ├── happy-path.http
+  ├── error-handling.http
+  ├── http-client.env.json
+  ├── http-client.private.env.json  # Private environment configuration
+```
+
+### Environment Files
+
+#### http-client.env.json
+
+- **Purpose**: Defines different environment configurations for your HTTP requests.
+- **Usage**: Contains key-value pairs for environment variables such as `host`, `port_product_composite`, ...
+
+#### http-client.private.env.json
+
+- **Purpose**: Stores sensitive environment configurations that should not be exposed publicly (e.g., personal API keys, private URLs).
+- **Usage**: Similar to `http-client.env.json`, but used for private settings.
+- **Important**: Ensure this file is added to your `.gitignore` to prevent it from being committed to the repository.
+
+
+### HTTP Request Files
+
+- **Purpose**: Contains HTTP requests to test various endpoints of your microservices.
+- **Example Files**:
+  - `happy-path.http`: Tests for typical use cases where services are expected to return successful responses.
+  - `error-handling.http`: Tests for error scenarios to ensure services handle invalid inputs gracefully.
+- **Usage**: Requests in these files use placeholders (e.g., `{{host}}`, `{{port_product_composite}}`) that are replaced with values from the selected environment in `http-client.env.json` or `http-client.private.env.json`.
+
+### Switching Between Environments
+
+- Open the HTTP request file in IntelliJ IDEA.
+- Use the environment dropdown at the top-right corner of the HTTP request editor to select the desired environment (`dev`, `docker`, etc.).
+
+
 
 ## Setup Development Environment
 - **Java Installation**: Use SDKMAN to install Java. Recommended version is Java 17 from JetBrains (`-jbr`).

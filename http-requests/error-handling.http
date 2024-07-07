@@ -1,0 +1,11 @@
+### Expect 404 from Product Composite Service
+GET http://{{host}}:{{port_product_composite}}/product-composite/13
+
+### Expect 400 from Product Service
+GET http://{{host}}:{{port_product}}/product/invalidProductId
+
+### No results from Recommendation Service
+GET http://{{host}}:{{port_recommendation}}/recommendation?productId=113
+
+### No results from Review Service
+GET http://{{host}}:{{port_review}}/review?productId=213

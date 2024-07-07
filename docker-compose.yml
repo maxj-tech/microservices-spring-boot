@@ -7,14 +7,20 @@ services:
   product:
     <<: *service-defaults
     build: ./services/product-service
+    ports:    # just exposed for direct access from .http client files
+      - "8081:8080"
 
   recommendation:
     <<: *service-defaults
     build: ./services/recommendation-service
+    ports:
+      - "8082:8080"
 
   review:
     <<: *service-defaults
     build: ./services/review-service
+    ports:
+      - "8083:8080"
 
   product-comp:
     <<: *service-defaults

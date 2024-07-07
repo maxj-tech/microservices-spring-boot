@@ -1,0 +1,11 @@
+### Product Composite Service
+GET http://{{host}}:{{port_product_composite}}/product-composite/123
+
+### Product Service
+GET http://{{host}}:{{port_product}}/product/123
+
+### Recommendation Service
+GET http://{{host}}:{{port_recommendation}}/recommendation?productId=123
+
+### Review Service
+GET http://{{host}}:{{port_review}}/review?productId=123
