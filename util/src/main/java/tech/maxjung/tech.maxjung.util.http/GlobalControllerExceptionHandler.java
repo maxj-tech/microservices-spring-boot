@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import tech.maxjung.api.exceptions.BadRequestException;
 import tech.maxjung.api.exceptions.InvalidInputException;
 import tech.maxjung.api.exceptions.NotFoundException;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+import static org.springframework.http.HttpStatus.*;
+
 
 /* instead of having repetitive try-catch blocks in each REST controller,
   @RestControllerAdvice lets you define error handling logic in one place for all your controllers.
@@ -21,6 +22,14 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 class GlobalControllerExceptionHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
+
+  @ResponseStatus(BAD_REQUEST)
+  @ExceptionHandler(  BadRequestException.class)
+  public @ResponseBody HttpErrorInfo handleBadRequestExceptions(
+      ServerHttpRequest request, BadRequestException ex) {
+
+    return createHttpErrorInfo(BAD_REQUEST, request, ex);
+  }
 
   // this maps a InvalidInputException to a HTTP 422 Unprocessable Entity status code
   @ResponseStatus(UNPROCESSABLE_ENTITY)

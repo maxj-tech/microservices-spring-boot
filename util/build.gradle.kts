@@ -26,7 +26,9 @@ dependencyManagement {
 
 dependencies {
     implementation(project(":api"))
+
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

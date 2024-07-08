@@ -2,7 +2,7 @@
 #
 # Sample usage:
 #
-#   HOST=localhost PORT=7000 ./test-em-all.bash
+#   HOST=localhost PORT=7000 ./test-services.sh
 #
 
 # Default variables
@@ -97,6 +97,7 @@ fi
 
 waitForService curl http://$HOST:$PORT/product-composite/$PROD_ID_REVS_RECS
 
+
 # Verify that a normal request works, expect three recommendations and three reviews
 assertCurl 200 "curl http://$HOST:$PORT/product-composite/$PROD_ID_REVS_RECS -s"
 assertEqual $PROD_ID_REVS_RECS $(echo $RESPONSE | jq .productId)
@@ -115,6 +116,7 @@ assertEqual $PROD_ID_NO_REVS $(echo $RESPONSE | jq .productId)
 assertEqual 3 $(echo $RESPONSE | jq ".recommendations | length")
 assertEqual 0 $(echo $RESPONSE | jq ".reviews | length")
 
+
 # Error Case Tests
 echo "Running error case tests..."
 
@@ -129,6 +131,18 @@ assertEqual "\"Invalid productId: -1\"" "$(echo $RESPONSE | jq .message)"
 # Verify that a 400 (Bad Request) error is returned for a productId that is not a number, i.e. invalid format
 assertCurl 400 "curl http://$HOST:$PORT/product-composite/invalidProductId -s"
 assertEqual "\"Type mismatch.\"" "$(echo $RESPONSE | jq .message)"
+
+
+# Verify access to Swagger and OpenAPI URLs
+echo "Swagger/OpenAPI tests"
+assertCurl 302 "curl -s  http://$HOST:$PORT/openapi/swagger-ui.html"
+assertCurl 200 "curl -sL http://$HOST:$PORT/openapi/swagger-ui.html"
+assertCurl 200 "curl -s  http://$HOST:$PORT/openapi/webjars/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config"
+assertCurl 200 "curl -s  http://$HOST:$PORT/openapi/v3/api-docs"
+assertEqual "3.0.1" "$(echo $RESPONSE | jq -r .openapi)"
+assertEqual "http://$HOST:$PORT" "$(echo $RESPONSE | jq -r '.servers[0].url')"
+assertCurl 200 "curl -s  http://$HOST:$PORT/openapi/v3/api-docs.yaml"
+
 
 if [[ $@ == *"stop"* ]]
 then
