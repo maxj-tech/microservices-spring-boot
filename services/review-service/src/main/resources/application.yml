@@ -4,7 +4,22 @@ server:
   port: 7003
   error.include-message: always
 
+# Use 'update' for automatic schema updates in development;
+# set to 'none' in production to avoid unexpected schema changes.
+# Use tools like Liquibase or Flyway for schema management.
+spring.jpa.hibernate.ddl-auto: update
+
+spring.datasource:
+  url: jdbc:mysql://localhost/review-db
+  username: user
+  password: pwd
+
+spring.datasource.hikari.initializationFailTimeout: 60000
+
+
 logging:
   level:
     root: INFO
     tech.maxjung: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
