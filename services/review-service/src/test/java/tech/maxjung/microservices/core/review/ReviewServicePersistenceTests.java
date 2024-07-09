@@ -24,8 +24,8 @@ import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORT
 // To prevent this and use the db config from application properties we need the following annotation
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 
+// To prevent automatic roll back after each test method, which allows changes to the database to persist,
 // tests don't run in transactional context even though there is one.
-// To prevent automatic roll back after each test method, which allows changes to the database to persist
 @Transactional(propagation = NOT_SUPPORTED)
 class ReviewServicePersistenceTests extends MySqlTestBase {
 
