@@ -1,5 +1,11 @@
 spring.application.name: product-service
 
+spring.data.mongodb:
+  auto-index-creation: true
+  host: localhost
+  port: 27017
+  database: product-db
+
 server:
   port: 7001
   error.include-message: always
@@ -8,3 +14,5 @@ logging:
   level:
     root: INFO
     tech.maxjung: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
