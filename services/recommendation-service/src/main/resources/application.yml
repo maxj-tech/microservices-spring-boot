@@ -1,5 +1,12 @@
 spring.application.name: recommendation-service
 
+spring.data.mongodb:
+  auto-index-creation: true
+  host: localhost
+  port: 27017
+  database: recommendation-db
+
+
 server:
   port: 7002
   error.include-message: always
@@ -8,3 +15,4 @@ logging:
   level:
     root: INFO
     tech.maxjung: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
