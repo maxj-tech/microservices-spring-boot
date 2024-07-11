@@ -24,10 +24,9 @@ class GlobalControllerExceptionHandler {
   private static final Logger LOG = LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
   @ResponseStatus(BAD_REQUEST)
-  @ExceptionHandler(  BadRequestException.class)
+  @ExceptionHandler(BadRequestException.class)
   public @ResponseBody HttpErrorInfo handleBadRequestExceptions(
       ServerHttpRequest request, BadRequestException ex) {
-
     return createHttpErrorInfo(BAD_REQUEST, request, ex);
   }
 

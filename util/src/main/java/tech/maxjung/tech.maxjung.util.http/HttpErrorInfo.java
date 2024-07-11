@@ -8,12 +8,4 @@ public record HttpErrorInfo(ZonedDateTime timestamp, HttpStatus httpStatus, Stri
   public HttpErrorInfo(HttpStatus httpStatus, String path, String message) {
     this(ZonedDateTime.now(), httpStatus, path, message);
   }
-
-  public int getStatus() {
-    return httpStatus.value();
-  }
-
-  public String getError() {
-    return httpStatus.getReasonPhrase();
-  }
 }

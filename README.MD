@@ -125,5 +125,26 @@ Place the environment and HTTP request files in the `/http-requests/` directory.
     ```bash
     docker rm -f $(docker ps -aq)
     ```
+  
+- access data stored in databases
+  - MongoDB
+      ```bash
+      docker compose exec mongodb mongosh product-db --quiet --eval "db.products.find()"
+      ```
+  - MySQL
+    ```bash
+    docker compose exec mysql mysql -uuser -p review-db -e "select * from reviews"
+      ```
 
+
+### TODO
+- If you are using IntelliJ IDEA, you also need to ensure that support for annotation processing is enabled. 
+  Open Preferences and navigate to Build, Execute, Deployment | Compiler | Annotations Processors. 
+  Verify that the checkbox named Enable annotation processing is selected!
+  - **run all *PersistenceTests** with gradle:
+      ```bash
+    ./gradlew :services:product-service:test --tests '*PersistenceTests'
+    ./gradlew :services:recommendation-service:test --tests '*PersistenceTests'
+    ./gradlew :services:review-service:test --tests '*PersistenceTests'
+      ```
   
