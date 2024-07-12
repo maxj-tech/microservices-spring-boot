@@ -2,7 +2,6 @@ package tech.maxjung.microservices.core.recommendation.services;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import tech.maxjung.api.core.recommendation.Recommendation;
 import tech.maxjung.microservices.core.recommendation.persistence.RecommendationEntity;
 
@@ -22,22 +21,12 @@ public abstract class RecommendationMapper {
 	}
 
 	public List<Recommendation> entitiesToApis(List<RecommendationEntity> entities, String serviceAddress) {
-		return entities.stream()
-			.map(entity -> new Recommendation(
-				entity.getProductId(),
-				entity.getRecommendationId(),
-				entity.getAuthor(),
-				entity.getRating(),
-				entity.getContent(),
-				serviceAddress)
-			).toList();
+		return entities.stream().map(entity -> entityToApi(entity, serviceAddress)).toList();
 	}
 
-	@Mappings({
-		@Mapping(target = "id", ignore = true),
-		@Mapping(target = "version", ignore = true),
-		@Mapping(target = "rating", source = "rate")
-	})
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "version", ignore = true)
+	@Mapping(target = "rating", source = "rate")
 	public abstract RecommendationEntity apiToEntity(Recommendation api);
 
 

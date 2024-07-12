@@ -17,24 +17,19 @@ public class ProductMapperTest {
 
 	@Test
 	void entityToApi() {
-
 		assertNotNull(mapper);
-
 		Product api = new Product(1, "n", 1, SRVC_ADDRESS);
 
 		ProductEntity entity = mapper.apiToEntity(api);
-
 		verifyEquality(api, entity);
 	}
 
 	@Test
 	void apiToEntity() {
-
 		assertNotNull(mapper);
-
 		ProductEntity entity = new ProductEntity(1, "n", 1);
-		Product api = mapper.entityToApi(entity, SRVC_ADDRESS);
 
+		Product api = mapper.entityToApi(entity, SRVC_ADDRESS);
 		verifyEquality(api, entity);
 	}
 
