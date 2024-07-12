@@ -1,6 +1,7 @@
 package tech.maxjung.microservices.composite.product.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,6 +91,16 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
                     throw ex;
             }
         }
+    }
+
+    @Override
+    public Product createProduct(Product product) {
+        throw new NotImplementedException("Not yet implemented"); // FIXME
+    }
+
+    @Override
+    public void deleteProduct(int productId) {
+        throw new NotImplementedException("Not yet implemented"); // FIXME
     }
 
     @Override
