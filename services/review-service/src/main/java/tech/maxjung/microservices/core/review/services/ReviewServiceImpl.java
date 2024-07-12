@@ -2,45 +2,67 @@ package tech.maxjung.microservices.core.review.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 import tech.maxjung.api.core.review.Review;
 import tech.maxjung.api.core.review.ReviewService;
 import tech.maxjung.api.exceptions.InvalidInputException;
+import tech.maxjung.microservices.core.review.persistence.ReviewEntity;
+import tech.maxjung.microservices.core.review.persistence.ReviewRepository;
 import tech.maxjung.tech.maxjung.util.http.ServiceUtil;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
 public class ReviewServiceImpl implements ReviewService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReviewServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ReviewServiceImpl.class);
 
-    private final ServiceUtil serviceUtil;
+	private final ReviewRepository repository;
 
-    public ReviewServiceImpl(ServiceUtil serviceUtil) {
-        this.serviceUtil = serviceUtil;
-    }
+	private final ReviewMapper mapper;
 
-    @Override
-    public List<Review> getReviews(int productId) {
-        if (productId < 1) {
-            throw new InvalidInputException("Invalid productId: " + productId);
-        }
+	private final ServiceUtil serviceUtil;
 
-        if (productId == 213) {
-            LOG.debug("No reviews found for productId: {}", productId);
-            return Collections.emptyList();
-        }
+	public ReviewServiceImpl(ReviewRepository repository, ReviewMapper mapper, ServiceUtil serviceUtil) {
+		this.repository = repository;
+		this.mapper = mapper;
+		this.serviceUtil = serviceUtil;
+	}
 
-        List<Review> reviews = List.of(
-                new Review(productId, 1, "Author 1", "Subject 1", "Content 1", serviceUtil.getServiceAddress()),
-                new Review(productId, 2, "Author 2", "Subject 2", "Content 2", serviceUtil.getServiceAddress()),
-                new Review(productId, 3, "Author 3", "Subject 3", "Content 3", serviceUtil.getServiceAddress())
-        );
+	@Override
+	public List<Review> getReviews(int productId) {
+		if (productId < 1) {
+			throw new InvalidInputException("Invalid productId: " + productId);
+		}
 
-        LOG.debug("/reviews response size: {}", reviews.size());
+		List<ReviewEntity> reviewEntities = repository.findByProductId(productId);
+		List<Review> reviewApis = mapper.entitiesToApis(reviewEntities, serviceUtil.getServiceAddress());
 
-        return reviews;
-    }
+		LOG.debug("/reviews response size: {}", reviewApis.size());
+		return reviewApis;
+	}
+
+	@Override
+	public Review createReview(Review review) {
+		try {
+			ReviewEntity reviewEntity = repository.save(mapper.apiToEntity(review));
+			LOG.debug("createReview: entity created for {}", getKeyString(review));
+
+			String serviceAddress = serviceUtil.getServiceAddress();
+			return mapper.entityToApi(reviewEntity, serviceAddress);
+		} catch (DataIntegrityViolationException dive) {
+			throw new InvalidInputException("Duplicate key " + getKeyString(review));
+		}
+	}
+
+	@Override
+	public void deleteReviews(int productId) {
+		LOG.debug("deleteReviews: tries to delete reviews for the product with productId: {}", productId);
+		repository.deleteAll(repository.findByProductId(productId));
+	}
+
+	private static String getKeyString(Review r) {
+		return String.format("(ProductId,ReviewId): (%d, %d)", r.productId(), r.reviewId());
+	}
 }

@@ -110,9 +110,9 @@ class ReviewServicePersistenceTests extends MySqlTestBase {
       repository.save(entity2);
     });
 
-    // Get the updated entity from the database and verify its new sate
+    // Get the updated entity from the database and verify its new state
     ReviewEntity updatedEntity = repository.findById(savedEntity.getId()).get();
-    assertEquals(1, (int)updatedEntity.getVersion());
+    assertEquals(1, updatedEntity.getVersion());
     assertEquals("a1", updatedEntity.getAuthor());
   }
 
