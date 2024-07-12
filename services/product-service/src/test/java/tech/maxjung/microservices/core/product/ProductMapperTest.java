@@ -13,19 +13,18 @@ public class ProductMapperTest {
 
 	private final ProductMapper mapper = Mappers.getMapper(ProductMapper.class);
 
+	private final static String SRVC_ADDRESS = "sa";
+
 	@Test
 	void entityToApi() {
 
 		assertNotNull(mapper);
 
-		Product api = new Product(1, "n", 1, "sa");
+		Product api = new Product(1, "n", 1, SRVC_ADDRESS);
 
 		ProductEntity entity = mapper.apiToEntity(api);
 
-		assertEquals(api.productId(), entity.getProductId());
-		assertEquals(api.name(), entity.getName());
-		assertEquals(api.weight(), entity.getWeight());
-		assertEquals(api.serviceAddress(), "sa");
+		verifyEquality(api, entity);
 	}
 
 	@Test
@@ -34,12 +33,16 @@ public class ProductMapperTest {
 		assertNotNull(mapper);
 
 		ProductEntity entity = new ProductEntity(1, "n", 1);
-		Product api = mapper.entityToApi(entity, "sa");
+		Product api = mapper.entityToApi(entity, SRVC_ADDRESS);
 
+		verifyEquality(api, entity);
+	}
+
+	private static void verifyEquality(Product api, ProductEntity entity) {
 		assertEquals(api.productId(), entity.getProductId());
 		assertEquals(api.name(), entity.getName());
 		assertEquals(api.weight(), entity.getWeight());
-		assertEquals(api.serviceAddress(), "sa");
+		assertEquals(api.serviceAddress(), SRVC_ADDRESS);
 	}
 
 }

@@ -11,14 +11,14 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan("tech.maxjung")
 public class ReviewServiceApplication {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReviewServiceApplication.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ReviewServiceApplication.class);
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 
-        ConfigurableApplicationContext context = SpringApplication.run(ReviewServiceApplication.class, args);
+		ConfigurableApplicationContext context = SpringApplication.run(ReviewServiceApplication.class, args);
 
-        String mysqlUri = context.getEnvironment().getProperty("spring.datasource.url");
-        LOG.info("Connected to MySQL: {}", mysqlUri);
-    }
+		String mysqlUri = context.getEnvironment().getProperty("spring.datasource.url");
+		LOG.info("Connected to MySQL: {}", mysqlUri);
+	}
 
 }

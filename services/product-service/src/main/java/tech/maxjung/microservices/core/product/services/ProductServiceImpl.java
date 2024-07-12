@@ -54,7 +54,6 @@ public class ProductServiceImpl implements ProductService {
 		} catch (DuplicateKeyException dke) {
 			throw new InvalidInputException("Duplicate key, Product Id: " + product.productId());
 		}
-
 	}
 
 	@Override
