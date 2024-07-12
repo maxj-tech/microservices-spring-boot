@@ -94,7 +94,7 @@ class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
 		postAndVerifyRecommendation(productId, recommendationId, UNPROCESSABLE_ENTITY)
 			.jsonPath("$.path").isEqualTo("/recommendation")
-			.jsonPath("$.message").value(Matchers.startsWithIgnoringCase("Duplicate key"));
+			.jsonPath("$.message").value(Matchers.startsWithIgnoringCase("duplicate key"));
 		assertEquals(1, repository.count());
 	}
 
