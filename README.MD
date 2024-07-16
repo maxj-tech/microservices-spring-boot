@@ -125,26 +125,48 @@ Place the environment and HTTP request files in the `/http-requests/` directory.
     ```bash
     docker rm -f $(docker ps -aq)
     ```
-  
-- access data stored in databases
-  - MongoDB
-      ```bash
-      docker compose exec mongodb mongosh product-db --quiet --eval "db.products.find()"
-      ```
-  - MySQL
+
+- print all data stored in databases
+  ```bash
+  docker compose exec mongodb mongosh product-db --quiet --eval "db.products.find()";
+  docker compose exec mongodb mongosh recommendation-db --quiet --eval "db.recommendations.find()";
+  docker compose exec mysql mysql -uuser -p review-db -e "select * from reviews";
+  ```
+- clear all databases
     ```bash
-    docker compose exec mysql mysql -uuser -p review-db -e "select * from reviews"
-      ```
+    docker compose exec mongodb mongosh product-db --quiet --eval "db.products.drop()"
+    docker compose exec mongodb mongosh recommendation-db --quiet --eval "db.recommendations.drop()"
+    docker compose exec mysql mysql -uuser -p review-db -e "delete from reviews"
+    ```
 
 
 ### TODO
 - If you are using IntelliJ IDEA, you also need to ensure that support for annotation processing is enabled. 
   Open Preferences and navigate to Build, Execute, Deployment | Compiler | Annotations Processors. 
   Verify that the checkbox named Enable annotation processing is selected!
-  - **run all *PersistenceTests** with gradle:
-      ```bash
-    ./gradlew :services:product-service:test --tests '*PersistenceTests'
-    ./gradlew :services:recommendation-service:test --tests '*PersistenceTests'
-    ./gradlew :services:review-service:test --tests '*PersistenceTests'
-      ```
-  
+
+- **run all *PersistenceTests** with gradle:
+    ```bash
+  ./gradlew :services:product-service:test --tests '*PersistenceTests'
+  ./gradlew :services:recommendation-service:test --tests '*PersistenceTests'
+  ./gradlew :services:review-service:test --tests '*PersistenceTests'
+    ```
+- update swagger ui
+  ```bash
+  ./gradlew :services:product-service:generateSwaggerDocumentation
+  ./gradlew :services:recommendation-service:generateSwaggerDocumentation
+  ./gradlew :services:review-service:generateSwaggerDocumentation
+  ./gradlew :services:product-comp-service:generateSwaggerDocumentation
+  ```
+- [view swagger ui](http://localhost:8080/openapi/swagger-ui.html)
+- [view OpenAPI document](http://localhost:8080/openapi/v3/api-docs)
+
+- build from scratch and start everything
+  ```bash
+  ./gradlew clean build && docker compose build --no-cache && docker compose up -d
+  ```
+
+- build from scratch , start and TEST everything then shutdown
+  ```bash
+   ./gradlew clean build && docker compose build --no-cache && ./scripts/test-services.sh start stop && ./scripts/start-services.sh && PORT=7000 ./scripts/test-services.sh && ./scripts/stop-services.sh
+  ```
