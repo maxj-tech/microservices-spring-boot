@@ -7,5 +7,6 @@ public record ProductAggregate(
   String name,
   int weight,
   List<RecommendationSummary> recommendations,
-  List<ReviewSummary> reviews, ServiceAddresses serviceAddresses
+  List<ReviewSummary> reviews,
+  ServiceAddresses serviceAddresses
 ) {}
