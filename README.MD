@@ -3,25 +3,21 @@
 This document provides helpful hints, reminders, and bash snippets for managing microservices built with Spring Boot and Spring Cloud.
 
 ## Table of Contents
-
 1. [General Commands](#general-commands)
 
 - [Build and Clean](#build-and-clean)
 - [Manage Services Individually](#manage-services-individually)
-
 2. [Script Management](#script-management)
 
 - [Start Services](#start-services)
 - [Test Services](#test-services)
 - [Stop Services](#stop-services)
-
 3. [Using IntelliJ HTTP Client with Environment Files](#using-intellij-http-client-with-environment-files)
 
 - [Setting Up Environment Files](#setting-up-environment-files)
 - [Environment Files](#environment-files)
 - [HTTP Request Files](#http-request-files)
 - [Switching Between Environments](#switching-between-environments)
-
 4. [Setup Development Environment](#setup-development-environment)
 5. [Handy Docker Commands](#handy-docker-commands)
 
@@ -58,6 +54,7 @@ chmod +x ./scripts/*.sh
 ```
 
 ### Start Services
+
 To start all services as background processes:
 ```bash
 ./scripts/start-services.sh
@@ -76,28 +73,33 @@ To start all services using Docker Compose:
 ./scripts/start-services.sh docker
 ```
 
+Additional options for configuring logging levels and SQL logging:
+
+```bash
+./scripts/start-services.sh --logging-level=ERROR --show-sql=false docker
+```
+
+- **--logging-level=<level>** Set logging level for Spring Boot applications.
+- **--show-sql=<true/false>** Enable or disable SQL logging for JPA repositories.
+
 ### Test Services
+
 To perform curl requests to the composite service that talks to all other services:
-
 - Default port 8080 (docker):
-
 ```bash
 ./scripts/test-services.sh docker
 ```
-
 - Port 7000 (dev):
-
 ```bash
 PORT=7000 ./scripts/test-services.sh
 ```
-
 - Default port 8080 (docker) plus starting and stopping:
-
 ```bash
 ./scripts/test-services.sh start stop docker
 ```
 
 ### Stop Services
+
 To stop all running services:
 ```bash
 ./scripts/stop-services.sh
@@ -174,14 +176,11 @@ docker rm -f $(docker ps -aq)
 ### Print All Data Stored in Databases
 
 Print data stored in MongoDB databases:
-
 ```bash
 docker compose exec mongodb mongosh product-db --quiet --eval "db.products.find()"
 docker compose exec mongodb mongosh recommendation-db --quiet --eval "db.recommendations.find()"
 ```
-
 Print data stored in MySQL database:
-
 ```bash 
 docker compose exec mysql mysql -uuser -p review-db -e "select * from reviews"
 ```
@@ -189,14 +188,11 @@ docker compose exec mysql mysql -uuser -p review-db -e "select * from reviews"
 ### Clear All Databases
 
 Clear data stored in MongoDB databases:
-
 ```bash 
 docker compose exec mongodb mongosh product-db --quiet --eval "db.products.drop()"
 docker compose exec mongodb mongosh recommendation-db --quiet --eval "db.recommendations.drop()"
 ```
-
 Clear data stored in MySQL database:
-
 ```bash 
 docker compose exec mysql mysql -uuser -p review-db -e "delete from reviews"
 ```
@@ -208,21 +204,20 @@ docker compose exec mysql mysql -uuser -p review-db -e "delete from reviews"
 ```bash 
 ./gradlew :services:product-service:test --tests '*PersistenceTests'
 ./gradlew :services:recommendation-service:test --tests '*PersistenceTests'
-./gradlew :services:review-service:test --tests '*PersistenceTests'
+./gradlew :services::review-service:test --tests '*PersistenceTests'
 ```
 
 ### Update Swagger UI:
 
 Generate Swagger documentation for each service:
-
 ```bash 
-./gradlew :services:product-service:generateSwaggerDocumentation 
-./gradlew :services:recommendation-service::generateSwaggerDocumentation 
-./gradlew :services::review-service::generateSwaggerDocumentation 
+./gradlew :services::product-service::generateSwaggerDocumentation 
+./gradlew :services::recommendation-service::generateSwaggerDocumentation 
+./gradlew ::services::review-service::generateSwaggerDocumentation 
 ./gradlew ::services::product-comp-service::generateSwaggerDocumentation 
 ```
 
-View Swagger UI at [http://localhost:8080/openapi/swagger-ui.html](http://localhost:/8080/openapi/swagger-ui.html)
+View Swagger UI at [http://localhost:/8080/openapi/swagger-ui.html](http://localhost:/8080/openapi/swagger-ui.html)
 
 View OpenAPI document at [http://localhost:/8080/openapi/v3/api-docs](http://localhost:/8080/openapi/v3/api-docs)
 
@@ -235,5 +230,5 @@ View OpenAPI document at [http://localhost:/8080/openapi/v3/api-docs](http://loc
 ### Build from Scratch , Start and TEST Everything then Shutdown:
 
 ```bash 
-./gradlew clean build && docker compose build --no-cache && ./scripts/test-services.sh start stop && ./scripts/start-services.sh && PORT=7000 ./scripts/test-services.sh && ./scripts/stop-services.sh 
+./gradlew clean build && docker compose build --no-cache && ./scripts/test-services.sh start stop docker && ./scripts/test-services.sh start stop  
 ```
