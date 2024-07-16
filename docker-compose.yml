@@ -9,21 +9,62 @@ services:
     build: ./services/product-service
     ports:    # just exposed for direct access from .http client files
       - "8081:8080"
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   recommendation:
     <<: *service-defaults
     build: ./services/recommendation-service
     ports:
       - "8082:8080"
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   review:
     <<: *service-defaults
     build: ./services/review-service
     ports:
       - "8083:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   product-comp:
     <<: *service-defaults
     build: ./services/product-comp-service
     ports:
       - "8080:8080"
+    depends_on:
+      - product
+      - recommendation
+      - review
+
+  mysql:
+    image: mysql:8.4.1
+    mem_limit: 512m
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=review-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=pwd --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 2s
+      retries: 60
+
+  mongodb:
+    image: mongo:7.0.12-jammy
+    mem_limit: 512m
+    ports:
+      - "27017:27017"
+    command: mongod
+    healthcheck:
+      test: "mongostat -n 1"
+      interval: 3s
+      timeout: 2s
+      retries: 60
