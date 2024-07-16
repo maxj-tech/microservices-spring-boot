@@ -2,6 +2,29 @@
 
 This document provides helpful hints, reminders, and bash snippets for managing microservices built with Spring Boot and Spring Cloud.
 
+## Table of Contents
+
+1. [General Commands](#general-commands)
+
+- [Build and Clean](#build-and-clean)
+- [Manage Services Individually](#manage-services-individually)
+
+2. [Script Management](#script-management)
+
+- [Start Services](#start-services)
+- [Test Services](#test-services)
+- [Stop Services](#stop-services)
+
+3. [Using IntelliJ HTTP Client with Environment Files](#using-intellij-http-client-with-environment-files)
+
+- [Setting Up Environment Files](#setting-up-environment-files)
+- [Environment Files](#environment-files)
+- [HTTP Request Files](#http-request-files)
+- [Switching Between Environments](#switching-between-environments)
+
+4. [Setup Development Environment](#setup-development-environment)
+5. [Handy Docker Commands](#handy-docker-commands)
+
 ## General Commands
 
 ### Build and Clean
@@ -28,6 +51,7 @@ To run a specific service from the project root, use the commands below for each
 - **Clean, build, and start service**: `./gradlew :services:review-service:clean :services:review-service:build :services:review-service:bootRun`
 
 ## Script Management
+
 Scripts are located in the `/scripts/` folder. To make these scripts executable, run:
 ```bash
 chmod +x ./scripts/*.sh
@@ -38,6 +62,7 @@ To start all services as background processes:
 ```bash
 ./scripts/start-services.sh
 ```
+
 Optional arguments for performing a Gradle clean or build before starting the services:
 ```bash
 ./scripts/start-services.sh clean
@@ -45,26 +70,32 @@ Optional arguments for performing a Gradle clean or build before starting the se
 ```bash
 ./scripts/start-services.sh build
 ```
+
 To start all services using Docker Compose:
 ```bash
 ./scripts/start-services.sh docker
 ```
 
-
 ### Test Services
 To perform curl requests to the composite service that talks to all other services:
-- default port 8080 (docker):
-  ```bash
-  ./scripts/test-services.sh
-  ```
-- port 7000 (dev):
-  ```bash
-  PORT=7000 ./scripts/test-services.sh
-  ```
-- default port 8080 (docker) plus starting and stopping:
-  ```bash
-  ./scripts/test-services.sh start stop
-  ```
+
+- Default port 8080 (docker):
+
+```bash
+./scripts/test-services.sh docker
+```
+
+- Port 7000 (dev):
+
+```bash
+PORT=7000 ./scripts/test-services.sh
+```
+
+- Default port 8080 (docker) plus starting and stopping:
+
+```bash
+./scripts/test-services.sh start stop docker
+```
 
 ### Stop Services
 To stop all running services:
@@ -77,7 +108,6 @@ To stop all running services:
 ### Setting Up Environment Files
 
 Place the environment and HTTP request files in the `/http-requests/` directory. Example structure:
-
 ```plaintext
 /http-requests/
   ├── happy-path.http
@@ -99,74 +129,111 @@ Place the environment and HTTP request files in the `/http-requests/` directory.
 - **Usage**: Similar to `http-client.env.json`, but used for private settings.
 - **Important**: Ensure this file is added to your `.gitignore` to prevent it from being committed to the repository.
 
-
 ### HTTP Request Files
 
 - **Purpose**: Contains HTTP requests to test various endpoints of your microservices.
 - **Example Files**:
   - `happy-path.http`: Tests for typical use cases where services are expected to return successful responses.
   - `error-handling.http`: Tests for error scenarios to ensure services handle invalid inputs gracefully.
-- **Usage**: Requests in these files use placeholders (e.g., `{{host}}`, `{{port_product_composite}}`) that are replaced with values from the selected environment in `http-client.env.json` or `http-client.private.env.json`.
+
+- **Usage**:
+  Requests in these files use placeholders (e.g., `{{host}}`, `{{port_product_composite}}`) that are replaced with
+  values from the selected environment in `http-client.env.json` or `http-client.private.env.json`.
 
 ### Switching Between Environments
 
-- Open the HTTP request file in IntelliJ IDEA.
-- Use the environment dropdown at the top-right corner of the HTTP request editor to select the desired environment (`dev`, `docker`, etc.).
-
-
+1. Open the HTTP request file in IntelliJ IDEA.
+2. Use the environment dropdown at the top-right corner of the HTTP request editor to select the desired
+   environment (`dev`, `docker`, etc.).
 
 ## Setup Development Environment
-- **Java Installation**: Use SDKMAN to install Java. Recommended version is Java 17 from JetBrains (`-jbr`).
-- **Docker**: TODO
+
+### Java Installation
+
+Use SDKMAN to install Java. Recommended version is Java 17 from JetBrains (`-jbr`).
+
+### Docker
+
+Ensure Docker Engine is installed and running on your development machine.
+
+If you are using IntelliJ IDEA, you also need to ensure that support for annotation processing is enabled. Open
+Preferences and navigate to Build, Execute, Deployment | Compiler | Annotations Processors. Verify that the checkbox
+named Enable annotation processing is selected!
 
 ## Handy Docker Commands
-- 💡Pipe the output of `docker ps -aq` (which lists all container IDs) into the `docker rm` command, 
-  which **removes all containers** listed using the`-f` force flag:
-    ```bash
-    docker rm -f $(docker ps -aq)
-    ```
 
-- print all data stored in databases
-  ```bash
-  docker compose exec mongodb mongosh product-db --quiet --eval "db.products.find()";
-  docker compose exec mongodb mongosh recommendation-db --quiet --eval "db.recommendations.find()";
-  docker compose exec mysql mysql -uuser -p review-db -e "select * from reviews";
-  ```
-- clear all databases
-    ```bash
-    docker compose exec mongodb mongosh product-db --quiet --eval "db.products.drop()"
-    docker compose exec mongodb mongosh recommendation-db --quiet --eval "db.recommendations.drop()"
-    docker compose exec mysql mysql -uuser -p review-db -e "delete from reviews"
-    ```
+### Remove All Containers
 
+Pipe the output of `docker ps -aq` (which lists all container IDs) into the `docker rm` command, which removes all
+containers listed using the`-f` force flag:
 
-### TODO
-- If you are using IntelliJ IDEA, you also need to ensure that support for annotation processing is enabled. 
-  Open Preferences and navigate to Build, Execute, Deployment | Compiler | Annotations Processors. 
-  Verify that the checkbox named Enable annotation processing is selected!
+```bash
+docker rm -f $(docker ps -aq)
+```
 
-- **run all *PersistenceTests** with gradle:
-    ```bash
-  ./gradlew :services:product-service:test --tests '*PersistenceTests'
-  ./gradlew :services:recommendation-service:test --tests '*PersistenceTests'
-  ./gradlew :services:review-service:test --tests '*PersistenceTests'
-    ```
-- update swagger ui
-  ```bash
-  ./gradlew :services:product-service:generateSwaggerDocumentation
-  ./gradlew :services:recommendation-service:generateSwaggerDocumentation
-  ./gradlew :services:review-service:generateSwaggerDocumentation
-  ./gradlew :services:product-comp-service:generateSwaggerDocumentation
-  ```
-- [view swagger ui](http://localhost:8080/openapi/swagger-ui.html)
-- [view OpenAPI document](http://localhost:8080/openapi/v3/api-docs)
+### Print All Data Stored in Databases
 
-- build from scratch and start everything
-  ```bash
-  ./gradlew clean build && docker compose build --no-cache && docker compose up -d
-  ```
+Print data stored in MongoDB databases:
 
-- build from scratch , start and TEST everything then shutdown
-  ```bash
-   ./gradlew clean build && docker compose build --no-cache && ./scripts/test-services.sh start stop && ./scripts/start-services.sh && PORT=7000 ./scripts/test-services.sh && ./scripts/stop-services.sh
-  ```
+```bash
+docker compose exec mongodb mongosh product-db --quiet --eval "db.products.find()"
+docker compose exec mongodb mongosh recommendation-db --quiet --eval "db.recommendations.find()"
+```
+
+Print data stored in MySQL database:
+
+```bash 
+docker compose exec mysql mysql -uuser -p review-db -e "select * from reviews"
+```
+
+### Clear All Databases
+
+Clear data stored in MongoDB databases:
+
+```bash 
+docker compose exec mongodb mongosh product-db --quiet --eval "db.products.drop()"
+docker compose exec mongodb mongosh recommendation-db --quiet --eval "db.recommendations.drop()"
+```
+
+Clear data stored in MySQL database:
+
+```bash 
+docker compose exec mysql mysql -uuser -p review-db -e "delete from reviews"
+```
+
+## Additional Commands
+
+### Run All Persistence Tests with Gradle:
+
+```bash 
+./gradlew :services:product-service:test --tests '*PersistenceTests'
+./gradlew :services:recommendation-service:test --tests '*PersistenceTests'
+./gradlew :services:review-service:test --tests '*PersistenceTests'
+```
+
+### Update Swagger UI:
+
+Generate Swagger documentation for each service:
+
+```bash 
+./gradlew :services:product-service:generateSwaggerDocumentation 
+./gradlew :services:recommendation-service::generateSwaggerDocumentation 
+./gradlew :services::review-service::generateSwaggerDocumentation 
+./gradlew ::services::product-comp-service::generateSwaggerDocumentation 
+```
+
+View Swagger UI at [http://localhost:8080/openapi/swagger-ui.html](http://localhost:/8080/openapi/swagger-ui.html)
+
+View OpenAPI document at [http://localhost:/8080/openapi/v3/api-docs](http://localhost:/8080/openapi/v3/api-docs)
+
+### Build from Scratch and Start Everything:
+
+```bash 
+./gradlew clean build && docker compose build --no-cache && docker compose up -d 
+```
+
+### Build from Scratch , Start and TEST Everything then Shutdown:
+
+```bash 
+./gradlew clean build && docker compose build --no-cache && ./scripts/test-services.sh start stop && ./scripts/start-services.sh && PORT=7000 ./scripts/test-services.sh && ./scripts/stop-services.sh 
+```
