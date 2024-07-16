@@ -74,29 +74,37 @@ To start all services using Docker Compose:
 ```
 
 Additional options for configuring logging levels and SQL logging:
-
 ```bash
 ./scripts/start-services.sh --logging-level=ERROR --show-sql=false docker
 ```
-
 - **--logging-level=<level>** Set logging level for Spring Boot applications.
 - **--show-sql=<true/false>** Enable or disable SQL logging for JPA repositories.
 
 ### Test Services
 
 To perform curl requests to the composite service that talks to all other services:
-- Default port 8080 (docker):
 ```bash
 ./scripts/test-services.sh docker
 ```
-- Port 7000 (dev):
+
+Optional arguments for testing services:
 ```bash
-PORT=7000 ./scripts/test-services.sh
+./scripts/test-services.sh --logging-level=ERROR --show-sql=false start stop docker
 ```
-- Default port 8080 (docker) plus starting and stopping:
-```bash
-./scripts/test-services.sh start stop docker
-```
+
+- **HOST=<hostname>** Specify the hostname or IP address of the service.
+- **PORT=<port_number>** Specify a custom port number for testing.
+- **PROD_ID_REVS_RECS=1** Default product ID with both reviews and recommendations.
+- **PROD_ID_NOT_FOUND=13** Default product ID that does not exist.
+- **PROD_ID_NO_RECS=113** Default product ID with no recommendations.
+- **PROD_ID_NO_REVS=213** Default product ID with no reviews.
+- **docker** Start services using Docker Compose (changes default port to 8080).
+- **--logging-level=<level>** Set logging level for services like DEBUG, INFO, WARN, ERROR.
+  If not set, the default logging level is used as configured in the services.
+- **--show-sql=<true/false>** Enable or disable SQL logging for JPA repositories.
+  If not set, the default value is used as configured in the services.
+- **start [clean|build]** Start services before running tests, with optional 'clean' and 'build' parameters.
+- **stop** Stop services after running tests.
 
 ### Stop Services
 
@@ -168,7 +176,6 @@ named Enable annotation processing is selected!
 
 Pipe the output of `docker ps -aq` (which lists all container IDs) into the `docker rm` command, which removes all
 containers listed using the`-f` force flag:
-
 ```bash
 docker rm -f $(docker ps -aq)
 ```
@@ -211,12 +218,11 @@ docker compose exec mysql mysql -uuser -p review-db -e "delete from reviews"
 
 Generate Swagger documentation for each service:
 ```bash 
-./gradlew :services::product-service::generateSwaggerDocumentation 
-./gradlew :services::recommendation-service::generateSwaggerDocumentation 
-./gradlew ::services::review-service::generateSwaggerDocumentation 
-./gradlew ::services::product-comp-service::generateSwaggerDocumentation 
+./gradlew :services:product-service:generateSwaggerDocumentation 
+./gradlew :services:recommendation-service:generateSwaggerDocumentation 
+./gradlew ::services:review-service:generateSwaggerDocumentation 
+./gradlew :services:product-comp-service:generateSwaggerDocumentation 
 ```
-
 View Swagger UI at [http://localhost:/8080/openapi/swagger-ui.html](http://localhost:/8080/openapi/swagger-ui.html)
 
 View OpenAPI document at [http://localhost:/8080/openapi/v3/api-docs](http://localhost:/8080/openapi/v3/api-docs)
@@ -227,8 +233,8 @@ View OpenAPI document at [http://localhost:/8080/openapi/v3/api-docs](http://loc
 ./gradlew clean build && docker compose build --no-cache && docker compose up -d 
 ```
 
-### Build from Scratch , Start and TEST Everything then Shutdown:
+### Build from Scratch, start and test everything in  default and docker environment, then shutdown:
 
 ```bash 
-./gradlew clean build && docker compose build --no-cache && ./scripts/test-services.sh start stop docker && ./scripts/test-services.sh start stop  
+./gradlew clean build && docker compose build --no-cache && ./scripts/test-services.sh start stop docker && ./scripts/test-services.sh start stop 
 ```
