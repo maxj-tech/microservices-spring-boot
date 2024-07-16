@@ -9,7 +9,7 @@ import tech.maxjung.api.core.recommendation.RecommendationService;
 import tech.maxjung.api.exceptions.InvalidInputException;
 import tech.maxjung.microservices.core.recommendation.persistence.RecommendationEntity;
 import tech.maxjung.microservices.core.recommendation.persistence.RecommendationRepository;
-import tech.maxjung.tech.maxjung.util.http.ServiceUtil;
+import tech.maxjung.util.http.ServiceUtil;
 
 import java.util.List;
 

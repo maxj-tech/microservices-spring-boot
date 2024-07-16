@@ -1,4 +1,4 @@
-package tech.maxjung.tech.maxjung.util.http;
+package tech.maxjung.util.http;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

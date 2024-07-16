@@ -9,7 +9,7 @@ import tech.maxjung.api.core.review.ReviewService;
 import tech.maxjung.api.exceptions.InvalidInputException;
 import tech.maxjung.microservices.core.review.persistence.ReviewEntity;
 import tech.maxjung.microservices.core.review.persistence.ReviewRepository;
-import tech.maxjung.tech.maxjung.util.http.ServiceUtil;
+import tech.maxjung.util.http.ServiceUtil;
 
 import java.util.List;
 

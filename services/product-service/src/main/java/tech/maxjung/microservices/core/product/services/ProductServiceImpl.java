@@ -10,7 +10,7 @@ import tech.maxjung.api.exceptions.InvalidInputException;
 import tech.maxjung.api.exceptions.NotFoundException;
 import tech.maxjung.microservices.core.product.persistence.ProductEntity;
 import tech.maxjung.microservices.core.product.persistence.ProductRepository;
-import tech.maxjung.tech.maxjung.util.http.ServiceUtil;
+import tech.maxjung.util.http.ServiceUtil;
 
 @RestController
 public class ProductServiceImpl implements ProductService {

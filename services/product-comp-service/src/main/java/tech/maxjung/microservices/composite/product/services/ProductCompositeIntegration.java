@@ -18,7 +18,7 @@ import tech.maxjung.api.core.review.Review;
 import tech.maxjung.api.core.review.ReviewService;
 import tech.maxjung.api.exceptions.InvalidInputException;
 import tech.maxjung.api.exceptions.NotFoundException;
-import tech.maxjung.tech.maxjung.util.http.HttpErrorInfo;
+import tech.maxjung.util.http.HttpErrorInfo;
 
 import java.io.IOException;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package tech.maxjung.tech.maxjung.util.http;
+package tech.maxjung.util.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

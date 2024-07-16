@@ -6,7 +6,7 @@ import tech.maxjung.api.core.product.Product;
 import tech.maxjung.api.core.recommendation.Recommendation;
 import tech.maxjung.api.core.review.Review;
 import tech.maxjung.api.exceptions.NotFoundException;
-import tech.maxjung.tech.maxjung.util.http.ServiceUtil;
+import tech.maxjung.util.http.ServiceUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
