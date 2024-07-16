@@ -1,5 +1,0 @@
-spring.config.activate.on-profile: docker
-
-server.port: 8080
-
-spring.data.mongodb.host: mongodb

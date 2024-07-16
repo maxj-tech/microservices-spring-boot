@@ -1,3 +1,4 @@
+# profile: default
 spring.application.name: product-service
 
 spring.data.mongodb:
@@ -16,3 +17,10 @@ logging:
     tech.maxjung: DEBUG
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 
+---
+# profile: docker
+spring.config.activate.on-profile: docker
+
+server.port: 8080
+
+spring.data.mongodb.host: mongodb

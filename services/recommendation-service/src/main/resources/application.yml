@@ -1,3 +1,4 @@
+# profile: default
 spring.application.name: recommendation-service
 
 spring.data.mongodb:
@@ -16,3 +17,11 @@ logging:
     root: INFO
     tech.maxjung: DEBUG
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+---
+# profile: docker
+spring.config.activate.on-profile: docker
+
+server.port: 8080
+
+spring.data.mongodb.host: mongodb

@@ -1,3 +1,4 @@
+# profile: default
 spring.application.name: review-service
 
 server:
@@ -25,3 +26,12 @@ logging:
     tech.maxjung: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+---
+# profile: docker
+spring.config.activate.on-profile: docker
+
+server.port: 8080
+
+spring.datasource:
+  url: jdbc:mysql://mysql/review-db
